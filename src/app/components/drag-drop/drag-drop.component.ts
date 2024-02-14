@@ -10,9 +10,9 @@ import {
   styleUrls: ['./drag-drop.component.scss'],
 })
 export class DragDropComponent {
-  todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
+  todo = ['Imagen 5'];
 
-  done = ['Get up', 'Brush teeth', 'Take a shower', 'Check e-mail', 'Walk dog'];
+  done = ['Imagen 1', 'Imagen 2', 'Imagen 3', 'Imagen 4'];
 
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {

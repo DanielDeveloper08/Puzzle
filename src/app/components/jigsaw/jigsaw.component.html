@@ -1,0 +1,38 @@
+<div class="wrapper" cdkDropListGroup>
+
+    <div
+    class="puzzle-container"
+    cdkDropList
+    [cdkDropListData]="puzzlePieces"
+    (cdkDropListDropped)="drop($event)"
+  >
+    <div
+      cdkDrag
+      *ngFor="let piece of puzzlePieces; let i = index"
+      class="puzzle-piece"
+    >
+      <img [src]="piece" alt="Puzzle Piece" width="100" />
+    </div>
+  </div>
+
+  <div
+    class="puzzle-board"
+    cdkDropList
+    [cdkDropListData]="puzzleBoard"
+    (cdkDropListDropped)="drop($event)"
+    cdkDropListSortingDisabled
+  >
+    <div
+      cdkDrag
+      *ngFor="let piece of puzzleBoard; let i = index"
+      class="puzzle-piece"
+    >
+      <img [src]="piece" alt="Puzzle Piece" width="100" />
+    </div>
+  </div>
+
+  <div *ngIf="isSolved()" class="message">
+    ¡Felicidades! ¡Has resuelto el puzzle!
+  </div>
+
+</div>

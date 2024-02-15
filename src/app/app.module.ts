@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { DragDropComponent } from './components/drag-drop/drag-drop.component';
 import { ListImagesComponent } from './pages/list-images/list-images.component';
 import { PuzzleComponent } from './pages/puzzle/puzzle.component';
+import { JigsawComponent } from './components/jigsaw/jigsaw.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { PuzzleComponent } from './pages/puzzle/puzzle.component';
     DragDropComponent,
     ListImagesComponent,
     PuzzleComponent,
+    JigsawComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, DragDropModule, CommonModule],
   providers: [],

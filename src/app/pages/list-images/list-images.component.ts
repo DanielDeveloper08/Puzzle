@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
 })
 export class ListImagesComponent implements OnInit {
   imageSources: string[] = [
-    'assets/bar.jpeg',
-    'assets/mario.jpeg',
+    'assets/mario.jpg',
+    'assets/stitch.jpg',
     'assets/boss.jpeg',
     'assets/doraemon.jpeg',
   ];

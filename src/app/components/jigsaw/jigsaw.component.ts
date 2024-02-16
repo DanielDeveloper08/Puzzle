@@ -17,8 +17,9 @@ export class JigsawComponent {
     this.loadPuzzlePieces();
   }
 
-  private loadPuzzlePieces() {
-    this.puzzlePieces = this.imagePuzzleSrv.getImagePieces();
+  private async loadPuzzlePieces() {
+    const imgPieces = await this.imagePuzzleSrv.getImagePieces();
+    this.puzzlePieces = imgPieces;
   }
 
   drop(event: CdkDragDrop<string[]>) {

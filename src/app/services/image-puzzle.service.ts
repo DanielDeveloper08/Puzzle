@@ -15,8 +15,7 @@ export class ImagePuzzleService {
     const imageUrl = this.imageSelected; // Reemplaza con la ruta de tu imagen
     const numberOfPieces = 9; // Número de piezas, ajusta según tu necesidad
 
-    const img = new Image();
-    img.src = imageUrl;
+    const imageUrl = '/assets/kurt_cobain.jpg'; // Reemplaza con la ruta de tu imagen
 
     img.onload = () => {
       const canvas = document.createElement('canvas');

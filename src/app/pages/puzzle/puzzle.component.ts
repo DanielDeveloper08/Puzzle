@@ -1,5 +1,6 @@
 import { Neighbors } from '@/models/neighbors';
 import { Tile } from '@/models/tile';
+import { ImagePuzzleService } from '@/services/image-puzzle.service';
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -12,11 +13,22 @@ export class PuzzleComponent implements OnInit {
   private readonly dimensions = 3;
 
   tiles: Tile[] = [];
+  public ímgPieces: string[] = [];
 
-  constructor(private _router: Router) {}
+  constructor(
+    private _router: Router,
+    private readonly _imagPuzzleSrv: ImagePuzzleService,
+  ) {}
+
   ngOnInit(): void {
     this.initTiles();
+    this.loadImagesPiece();
     this.shuffle(this.tiles);
+  }
+
+  private async loadImagesPiece() {
+    const pieces = await this._imagPuzzleSrv.getImagePieces();
+    this.ímgPieces = pieces;
   }
 
   shuffle(tiles: Tile[]): void {

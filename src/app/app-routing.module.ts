@@ -9,7 +9,7 @@ const routes: Routes = [
     component: ListImagesComponent,
   },
   {
-    path: 'puzzle',
+    path: 'puzzle/:name',
     component: PuzzleComponent,
   },
   {

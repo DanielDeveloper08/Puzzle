@@ -7,14 +7,17 @@ export class ImagePuzzleService {
   private _imagePieces: string[] = []; // Rutas de las imágenes divididas
   private imageSelected: string = '';
 
+  ngOnInit() {}
   get imgPieces() {
     return this._imagePieces;
   }
 
   public getImagePieces(numberOfPieces: number = 9): Promise<string[]> {
+    console.log('image', this.imageSelected);
+    const image = localStorage.getItem('image');
     return new Promise<string[]>((resolve) => {
       this._imagePieces = [];
-      const imageUrl = this.imageSelected;
+      const imageUrl = image ?? this.imageSelected;
 
       if (!imageUrl) {
         resolve([]);
@@ -52,15 +55,16 @@ export class ImagePuzzleService {
 
             const dataUrl = canvas.toDataURL('image/jpeg');
             this._imagePieces = [...this._imagePieces, dataUrl];
-
-            resolve(this._imagePieces);
           }
         }
+
+        resolve(this._imagePieces);
       };
     });
   }
 
   async setImage(newValue: string) {
     this.imageSelected = newValue;
+    localStorage.setItem('image', newValue);
   }
 }

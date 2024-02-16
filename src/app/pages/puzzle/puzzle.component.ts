@@ -3,7 +3,7 @@ import { Tile } from '@/models/tile';
 import { ImagePuzzleService } from '@/services/image-puzzle.service';
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-puzzle',
   templateUrl: './puzzle.component.html',
@@ -13,22 +13,28 @@ export class PuzzleComponent implements OnInit {
   private readonly dimensions = 3;
 
   tiles: Tile[] = [];
-  ímgPieces: string[] = [];
+  imgPieces: string[] = [];
+  routeOfPuzzle: string = '';
 
   constructor(
     private _router: Router,
     private readonly _imagPuzzleSrv: ImagePuzzleService,
+    private _activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.initTiles();
     this.loadImagesPiece();
     this.shuffle(this.tiles);
+    this._activatedRoute.params.subscribe((data) => {
+      this.routeOfPuzzle = `assets/title-${data['name']}.png`;
+    });
   }
 
   private async loadImagesPiece() {
     const pieces = await this._imagPuzzleSrv.getImagePieces();
-    this.ímgPieces = pieces;
+    this.imgPieces = pieces;
+    this.imgPieces.length <= 0 && this._router.navigateByUrl('home');
   }
 
   async shuffle(tiles: Tile[]) {
@@ -51,7 +57,6 @@ export class PuzzleComponent implements OnInit {
 
   private async initTiles() {
     const pieces = await this._imagPuzzleSrv.getImagePieces();
-
     let count = 0;
     for (let row = 0; row < this.dimensions; row++) {
       for (let col = 0; col < this.dimensions; col++) {
@@ -65,7 +70,6 @@ export class PuzzleComponent implements OnInit {
             currIndex: count,
             prevIndex: null,
           },
-          image: 'assets/temp.jpg',
           boundary: { row: `${row + 1}`, column: `${col + 1}` },
         });
         count++;
@@ -77,6 +81,8 @@ export class PuzzleComponent implements OnInit {
 
     this.tiles.push(blankTile);
     this.handleNeighbors();
+
+    this.shuffle(this.tiles);
   }
 
   private handleNeighbors(): void {

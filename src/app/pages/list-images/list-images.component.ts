@@ -24,6 +24,10 @@ export class ListImagesComponent implements OnInit {
 
   selectImage(imageSrc: string) {
     this._imagePuzzleService.setImage(imageSrc);
-    this._router.navigateByUrl('puzzle');
+    this._router.navigate(['puzzle', this.getName(imageSrc)]);
+  }
+
+  getName(route: string) {
+    return route.split('/')[1].split('.')[0];
   }
 }

@@ -5,14 +5,13 @@
     <div class="title">A jugar!</div>
     <div class="wrapper">
         <div class="grid-container">
-            <ng-container *ngFor="let tile of tiles">
+            <ng-container *ngFor="let tile of tiles; let i = index">
                 <div class="tile-boundary">
                     <div class="grid-item tile" [class.blank-tile]="tile.blank" [style.grid-row]="tile.boundary!.row"
                         [style.grid-column]="tile.boundary!.column" cdkDrag cdkDragBoundary=".tile-boundary"
                         [cdkDragData]="tile" [cdkDragDisabled]="tile.disabled" [cdkDragLockAxis]="tile.lockAxis!"
                         (cdkDragEnded)="dragEnd($event)">
-                        {{ tile.label }}
-                        <img [src]="tile.image" alt="image">
+                        <img [src]="tile.image" alt="image" width="90" height="90">
                     </div>
                 </div>
             </ng-container>

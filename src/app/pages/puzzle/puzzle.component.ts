@@ -50,6 +50,7 @@ export class PuzzleComponent implements OnInit {
             currIndex: count,
             prevIndex: null,
           },
+          image: 'assets/temp.jpg',
           boundary: { row: `${row + 1}`, column: `${col + 1}` },
         });
         count++;

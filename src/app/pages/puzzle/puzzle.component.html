@@ -2,7 +2,11 @@
     <div class="icon-back" (click)="goToHome()">
         <i class="bi bi-arrow-left"></i>
     </div>
-    <div class="title">A jugar!</div>
+    <!-- <div class="title">A jugar!</div> -->
+
+    <div class="title-image">
+        <img src="assets/title-boss.png" alt="">
+    </div>
     <div class="wrapper">
         <div class="grid-container">
             <ng-container *ngFor="let tile of tiles">
@@ -11,7 +15,7 @@
                         [style.grid-column]="tile.boundary!.column" cdkDrag cdkDragBoundary=".tile-boundary"
                         [cdkDragData]="tile" [cdkDragDisabled]="tile.disabled" [cdkDragLockAxis]="tile.lockAxis!"
                         (cdkDragEnded)="dragEnd($event)">
-                        {{ tile.label }}
+                        <!-- {{ tile.label }} -->
                         <img [src]="tile.image" alt="image">
                     </div>
                 </div>
@@ -21,7 +25,7 @@
 
     <br />
 
-    <button mat-raised-button color="primary" (click)="shuffle(tiles)">
-        Shuffle
+    <button class="cta" (click)="shuffle(tiles)">
+        <span class="span">BARAJAR</span>
     </button>
 </div>

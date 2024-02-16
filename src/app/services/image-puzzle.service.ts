@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class ImagePuzzleService {
   private _imagePieces: string[] = []; // Rutas de las imágenes divididas
-  private imageSelected: string = '/assets/bar.jpeg';
+  private imageSelected: string = '';
 
   get imgPieces() {
     return this._imagePieces;

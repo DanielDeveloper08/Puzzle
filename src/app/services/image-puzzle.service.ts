@@ -12,6 +12,8 @@ export class ImagePuzzleService {
 
   public getImagePieces(numberOfPieces: number = 9): Promise<string[]> {
     return new Promise<string[]>(resolve => {
+      this._imagePieces = [];
+
       const imageUrl = '/assets/kurt_cobain.jpg'; // Reemplaza con la ruta de tu imagen
 
       const img = new Image();
@@ -44,7 +46,7 @@ export class ImagePuzzleService {
             );
 
             const dataUrl = canvas.toDataURL('image/jpeg');
-            this._imagePieces.push(dataUrl);
+            this._imagePieces = [...this._imagePieces, dataUrl];
 
             resolve(this._imagePieces);
           }

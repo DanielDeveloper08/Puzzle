@@ -94,32 +94,30 @@ export class PuzzleComponent implements OnInit {
 
   private getBlankTileNeighbors(): Tile[] {
     const tile = this.tiles.find((tile) => tile.blank) as Tile;
-    const tileIndex = tile?.arrayPosition?.currIndex;
-
-    if (!tileIndex) return [];
+    const tileIndex = tile?.arrayPosition?.currIndex!;
 
     const tiles = [];
     const neighbors = {} as Neighbors;
 
-    if (tile.point!.row) {
+    if (tile?.point?.row) {
       tiles.push(this.tiles[tileIndex - this.dimensions]); // up
       neighbors.up = this.tiles[tileIndex - this.dimensions]?.id!;
       this.tiles[tileIndex - this.dimensions].lockAxis = 'y';
     }
 
-    if (tile.point!.row < this.dimensions - 1) {
+    if (tile?.point?.row! < this.dimensions - 1) {
       tiles.push(this.tiles[tileIndex + this.dimensions]); // down
       neighbors.down = this.tiles[tileIndex + this.dimensions]?.id!;
       this.tiles[tileIndex + this.dimensions].lockAxis = 'y';
     }
 
-    if (tile.point!.col) {
+    if (tile?.point!.col) {
       tiles.push(this.tiles[tileIndex - 1]); // left
       neighbors.left = this.tiles[tileIndex - 1]?.id!;
       this.tiles[tileIndex - 1].lockAxis = 'x';
     }
 
-    if (tile.point!.col < this.dimensions - 1) {
+    if (tile?.point!.col < this.dimensions - 1) {
       tiles.push(this.tiles[tileIndex + 1]); //right
       neighbors.right = this.tiles[tileIndex + 1]?.id!;
       this.tiles[tileIndex + 1].lockAxis = 'x';

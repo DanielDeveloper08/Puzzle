@@ -9,7 +9,7 @@
     </div>
     <div class="wrapper">
         <div class="grid-container">
-            <ng-container *ngFor="let tile of tiles">
+            <ng-container *ngFor="let tile of tiles; let i = index">
                 <div class="tile-boundary">
                     <div class="grid-item tile" [class.blank-tile]="tile.blank" [style.grid-row]="tile.boundary!.row"
                         [style.grid-column]="tile.boundary!.column" cdkDrag cdkDragBoundary=".tile-boundary"

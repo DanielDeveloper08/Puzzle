@@ -1,5 +1,6 @@
 import { Neighbors } from '@/models/neighbors';
 import { Tile } from '@/models/tile';
+import { ImagePuzzleService } from '@/services/image-puzzle.service';
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -12,20 +13,31 @@ export class PuzzleComponent implements OnInit {
   private readonly dimensions = 3;
 
   tiles: Tile[] = [];
+  ímgPieces: string[] = [];
 
-  constructor(private _router: Router) {}
+  constructor(
+    private _router: Router,
+    private readonly _imagPuzzleSrv: ImagePuzzleService,
+  ) {}
+
   ngOnInit(): void {
     this.initTiles();
+    this.loadImagesPiece();
     this.shuffle(this.tiles);
   }
 
-  shuffle(tiles: Tile[]): void {
+  private async loadImagesPiece() {
+    const pieces = await this._imagPuzzleSrv.getImagePieces();
+    this.ímgPieces = pieces;
+  }
+
+  async shuffle(tiles: Tile[]) {
     for (var i = tiles.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
       var temp = tiles[i];
       tiles[i] = tiles[j];
       tiles[j] = temp;
-      this.switchItemsInArray(tiles[i], tiles[j]);
+      await this.switchItemsInArray(tiles[i], tiles[j]);
     }
     this.handleNeighbors();
   }
@@ -37,7 +49,9 @@ export class PuzzleComponent implements OnInit {
     event.source.element.nativeElement.style.transform = 'none';
   }
 
-  private initTiles(): void {
+  private async initTiles() {
+    const pieces = await this._imagPuzzleSrv.getImagePieces();
+
     let count = 0;
     for (let row = 0; row < this.dimensions; row++) {
       for (let col = 0; col < this.dimensions; col++) {
@@ -46,6 +60,7 @@ export class PuzzleComponent implements OnInit {
           label: `${count + 1}`,
           point: { row, col },
           disabled: true,
+          image: pieces[count],
           arrayPosition: {
             currIndex: count,
             prevIndex: null,
@@ -73,7 +88,10 @@ export class PuzzleComponent implements OnInit {
 
   private getBlankTileNeighbors(): Tile[] {
     const tile = this.tiles.find((tile) => tile.blank) as Tile;
-    const tileIndex: number = tile.arrayPosition!.currIndex;
+    const tileIndex = tile?.arrayPosition?.currIndex;
+
+    if (!tileIndex) return [];
+
     const tiles = [];
     const neighbors = {} as Neighbors;
 
@@ -104,7 +122,7 @@ export class PuzzleComponent implements OnInit {
     return tiles.filter((tile) => !!tile);
   }
 
-  private switchItemsInArray(tileA: Tile, tileB: Tile): void {
+  private async switchItemsInArray(tileA: Tile, tileB: Tile) {
     const prevBlankTilePoint = tileB.point;
 
     tileB.arrayPosition!.prevIndex = tileB.arrayPosition!.currIndex;

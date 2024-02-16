@@ -84,7 +84,7 @@ export class PuzzleComponent implements OnInit {
     });
 
     Swal.fire({
-      title: 'Felicitaciones, ¡Has ganado!',
+      title: 'Felicitaciones, ¡Has ganado! 🎉🎊',
       text: '¿Quieres jugar de nuevo?',
       width: 600,
       padding: '3em',

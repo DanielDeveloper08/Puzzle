@@ -15,7 +15,6 @@ export class JigsawComponent {
 
   ngOnInit() {
     this.loadPuzzlePieces();
-    this.imagePuzzleSrv.shuffleImagePieces();
   }
 
   private loadPuzzlePieces() {

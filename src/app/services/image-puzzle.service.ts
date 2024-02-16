@@ -1,24 +1,24 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImagePuzzleService {
   private imagePieces: string[] = []; // Rutas de las imágenes divididas
+  private imageSelected: string = '';
 
-  constructor() {
-    this.loadImagePieces();
-  }
+  constructor() {}
 
-  private loadImagePieces() {
-    const imageUrl = '/assets/kurt_cobain.jpg'; // Reemplaza con la ruta de tu imagen
+  loadImagePieces() {
+    this.imagePieces = [];
+    const imageUrl = this.imageSelected; // Reemplaza con la ruta de tu imagen
     const numberOfPieces = 9; // Número de piezas, ajusta según tu necesidad
 
     const img = new Image();
     img.src = imageUrl;
 
     img.onload = () => {
-
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
 
@@ -46,7 +46,6 @@ export class ImagePuzzleService {
 
           const dataUrl = canvas.toDataURL('image/jpeg');
           this.imagePieces.push(dataUrl);
-
         }
       }
     };
@@ -56,7 +55,9 @@ export class ImagePuzzleService {
     return this.imagePieces;
   }
 
-  shuffleImagePieces(): void {
-    // Lógica para mezclar las imágenes divididas.
+  async setImage(newValue: string) {
+    this.imageSelected = newValue;
+    await this.loadImagePieces();
+    console.log('PARTES', this.imagePieces);
   }
 }

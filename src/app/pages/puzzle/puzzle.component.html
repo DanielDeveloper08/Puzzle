@@ -1,3 +1,27 @@
-<h1>Puzzle Game</h1>
+<div class="container">
+    <div class="icon-back" (click)="goToHome()">
+        <i class="bi bi-arrow-left"></i>
+    </div>
+    <div class="title">A jugar!</div>
+    <div class="wrapper">
+        <div class="grid-container">
+            <ng-container *ngFor="let tile of tiles">
+                <div class="tile-boundary">
+                    <div class="grid-item tile" [class.blank-tile]="tile.blank" [style.grid-row]="tile.boundary!.row"
+                        [style.grid-column]="tile.boundary!.column" cdkDrag cdkDragBoundary=".tile-boundary"
+                        [cdkDragData]="tile" [cdkDragDisabled]="tile.disabled" [cdkDragLockAxis]="tile.lockAxis!"
+                        (cdkDragEnded)="dragEnd($event)">
+                        {{ tile.label }}
+                        <img [src]="tile.image" alt="image">
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
 
-<jigsaw-game />
+    <br />
+
+    <button mat-raised-button color="primary" (click)="shuffle(tiles)">
+        Shuffle
+    </button>
+</div>

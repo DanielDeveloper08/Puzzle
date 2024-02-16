@@ -1,15 +1,25 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PuzzleComponent } from './pages/puzzle/puzzle.component';
+import { ListImagesComponent } from './pages/list-images/list-images.component';
 
 const routes: Routes = [
+  {
+    path: 'home',
+    component: ListImagesComponent,
+  },
   {
     path: 'puzzle',
     component: PuzzleComponent,
   },
   {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'home',
+  },
+  {
     path: '**',
-    redirectTo: 'puzzle',
+    redirectTo: 'home',
   },
 ];
 

@@ -13,7 +13,6 @@
                         [style.grid-column]="tile.boundary!.column" cdkDrag cdkDragBoundary=".tile-boundary"
                         [cdkDragData]="tile" [cdkDragDisabled]="tile.disabled" [cdkDragLockAxis]="tile.lockAxis!"
                         (cdkDragEnded)="dragEnd($event)">
-                        <!-- {{ tile.label }} -->
                         <img [src]="tile.image" alt="image">
                     </div>
                 </div>

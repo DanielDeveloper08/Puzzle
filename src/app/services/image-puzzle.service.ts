@@ -13,7 +13,6 @@ export class ImagePuzzleService {
   }
 
   public getImagePieces(numberOfPieces: number = 9): Promise<string[]> {
-    console.log('image', this.imageSelected);
     const image = localStorage.getItem('image');
     return new Promise<string[]>((resolve) => {
       this._imagePieces = [];

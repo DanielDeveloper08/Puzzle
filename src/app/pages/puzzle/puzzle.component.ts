@@ -4,6 +4,9 @@ import { ImagePuzzleService } from '@/services/image-puzzle.service';
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import * as confetti from 'canvas-confetti';
+
 @Component({
   selector: 'app-puzzle',
   templateUrl: './puzzle.component.html',
@@ -53,6 +56,74 @@ export class PuzzleComponent implements OnInit {
     this.switchItemsInArray(event.source.data, blankTile);
     this.handleNeighbors();
     event.source.element.nativeElement.style.transform = 'none';
+
+    if (this.isGameFinished()) {
+      this.celebrate();
+    }
+  }
+
+  isGameFinished(): boolean {
+    let correctOrder = true;
+
+    this.tiles.forEach((tile, index) => {
+      if (parseInt(tile.label!) !== index + 1) {
+        correctOrder = false;
+      }
+    });
+
+    return correctOrder;
+  }
+
+  celebrate() {
+    this.playAudio();
+
+    confetti.create()({
+      particleCount: 100,
+      spread: 100,
+      origin: { y: 0.6 },
+    });
+
+    Swal.fire({
+      title: 'Felicitaciones, ¡Has ganado!',
+      text: '¿Quieres jugar de nuevo?',
+      width: 600,
+      padding: '3em',
+      color: '#716add',
+      confirmButtonText: 'Sí',
+      showCancelButton: true,
+      cancelButtonText: 'No',
+      didOpen: this.handleSwalBtns.bind(this),
+    });
+  }
+
+  handleSwalBtns() {
+    const confirmBtn = Swal.getConfirmButton();
+    const cancelBtn = Swal.getCancelButton();
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', this.tryAgain.bind(this));
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', this.navigateToList.bind(this));
+    }
+  }
+
+  playAudio() {
+    const audio = new Audio();
+    audio.src = '/assets/finish-game.mp3';
+    audio.volume = 0.5;
+
+    audio.play();
+  }
+
+  async tryAgain() {
+    await this.shuffle(this.tiles);
+  }
+
+  navigateToList(): void {
+    this._router.navigateByUrl('/home');
+    localStorage.clear();
   }
 
   private async initTiles() {

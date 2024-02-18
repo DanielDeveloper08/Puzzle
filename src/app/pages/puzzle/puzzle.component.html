@@ -1,28 +1,38 @@
 <div class="container">
+  <header class="header">
     <div class="icon-back" (click)="goToHome()">
-        <i class="bi bi-arrow-left"></i>
+      <i class="bi bi-arrow-left"></i>
     </div>
-    <div class="title-image">
-        <img [src]="routeOfPuzzle" alt="logo">
+
+    <div class="title">
+      <span>{{ puzzleTitle }}</span>
     </div>
-    <div class="wrapper">
-        <div class="grid-container">
-            <ng-container *ngFor="let tile of tiles; let i = index">
-                <div class="tile-boundary">
-                    <div class="grid-item tile" [class.blank-tile]="tile.blank" [style.grid-row]="tile.boundary!.row"
-                        [style.grid-column]="tile.boundary!.column" cdkDrag cdkDragBoundary=".tile-boundary"
-                        [cdkDragData]="tile" [cdkDragDisabled]="tile.disabled" [cdkDragLockAxis]="tile.lockAxis!"
-                        (cdkDragEnded)="dragEnd($event)">
-                        <img [src]="tile.image" alt="image">
-                    </div>
-                </div>
-            </ng-container>
+  </header>
+
+  <div class="wrapper">
+    <div class="grid-container">
+      <ng-container *ngFor="let tile of tiles; let i = index">
+        <div class="tile-boundary">
+          <div
+            cdkDrag
+            class="grid-item tile"
+            [class.blank-tile]="tile.blank"
+            [style.grid-row]="tile.boundary!.row"
+            [style.grid-column]="tile.boundary!.column"
+            cdkDragBoundary=".tile-boundary"
+            [cdkDragData]="tile"
+            [cdkDragDisabled]="tile.disabled"
+            [cdkDragLockAxis]="tile.lockAxis!"
+            (cdkDragEnded)="dragEnd($event)"
+          >
+            <img [src]="tile.image" alt="ImgPiece" />
+          </div>
         </div>
+      </ng-container>
     </div>
+  </div>
 
-    <br />
-
-    <button class="cta" (click)="shuffle(tiles)">
-        <span class="span">BARAJAR</span>
-    </button>
+  <button class="cta" (click)="shuffle(tiles)">
+    <span class="span">BARAJAR</span>
+  </button>
 </div>

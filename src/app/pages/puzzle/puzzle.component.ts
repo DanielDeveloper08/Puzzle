@@ -1,11 +1,13 @@
-import { Neighbors } from '@/models/neighbors';
-import { Tile } from '@/models/tile';
-import { ImagePuzzleService } from '@/services/image-puzzle.service';
-import { CdkDragEnd } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CdkDragEnd } from '@angular/cdk/drag-drop';
+import { map } from 'rxjs';
 import Swal from 'sweetalert2';
 import * as confetti from 'canvas-confetti';
+import { Tile } from '@/models/tile';
+import { Neighbors } from '@/models/neighbors';
+import { PuzzleImgEnum } from '@/enums/puzzle.enum';
+import { ImagePuzzleService } from '@/services/image-puzzle.service';
 
 @Component({
   selector: 'app-puzzle',
@@ -13,37 +15,54 @@ import * as confetti from 'canvas-confetti';
   styleUrls: ['./puzzle.component.scss'],
 })
 export class PuzzleComponent implements OnInit {
-  private readonly dimensions = 3;
+  private readonly dimensions = 2;
 
-  tiles: Tile[] = [];
-  imgPieces: string[] = [];
-  routeOfPuzzle: string = '';
+  public tiles: Tile[] = [];
+  public imgPieces: string[] = [];
+  private currentPuzzle: string = '';
 
   constructor(
-    private _router: Router,
+    private readonly _router: Router,
     private readonly _imagPuzzleSrv: ImagePuzzleService,
-    private _activatedRoute: ActivatedRoute
+    private readonly _activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
     this.initTiles();
     this.loadImagesPiece();
+
     this.shuffle(this.tiles);
-    this._activatedRoute.params.subscribe((data) => {
-      this.routeOfPuzzle = `assets/title-${data['name']}.png`;
+
+    this._activatedRoute.paramMap.pipe(
+      map((params) => params.get('name'))
+    )
+    .subscribe((name) => {
+      if (!name) return;
+      this.currentPuzzle = name;
     });
   }
 
   private async loadImagesPiece() {
     const pieces = await this._imagPuzzleSrv.getImagePieces();
     this.imgPieces = pieces;
-    this.imgPieces.length <= 0 && this._router.navigateByUrl('home');
+    this.imgPieces.length <= 0 && this._router.navigateByUrl('/home');
   }
 
-  async shuffle(tiles: Tile[]) {
-    for (var i = tiles.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = tiles[i];
+  public get puzzleTitle(): string {
+    const titles: Record<PuzzleImgEnum, string> = {
+      [PuzzleImgEnum.AREA]: 'Área',
+      [PuzzleImgEnum.NUMEROS_PARES]: 'Números pares',
+      [PuzzleImgEnum.SALUDO]: 'Saludo',
+      [PuzzleImgEnum.SUMA_RESTA]: 'Suma / Resta',
+    };
+
+    return titles[this.currentPuzzle as PuzzleImgEnum] ?? '';
+  }
+
+  public async shuffle(tiles: Tile[]) {
+    for (let i = tiles.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      let temp = tiles[i];
       tiles[i] = tiles[j];
       tiles[j] = temp;
       await this.switchItemsInArray(tiles[i], tiles[j]);
@@ -51,7 +70,7 @@ export class PuzzleComponent implements OnInit {
     this.handleNeighbors();
   }
 
-  dragEnd(event: CdkDragEnd): void {
+  public dragEnd(event: CdkDragEnd): void {
     const blankTile = this.tiles.find((tile) => tile.blank) as Tile;
     this.switchItemsInArray(event.source.data, blankTile);
     this.handleNeighbors();
@@ -62,7 +81,7 @@ export class PuzzleComponent implements OnInit {
     }
   }
 
-  isGameFinished(): boolean {
+  private isGameFinished(): boolean {
     let correctOrder = true;
 
     this.tiles.forEach((tile, index) => {
@@ -74,7 +93,7 @@ export class PuzzleComponent implements OnInit {
     return correctOrder;
   }
 
-  celebrate() {
+  public celebrate() {
     this.playAudio();
 
     confetti.create()({
@@ -83,20 +102,43 @@ export class PuzzleComponent implements OnInit {
       origin: { y: 0.6 },
     });
 
+    const answerTemplate = this.getAnswer()
+      .split('-')
+      .map(answer => `<p style="font-family: inherit;">${answer}</p>`)
+      .join(' ');
+
     Swal.fire({
       title: 'Felicitaciones, ¡Has ganado! 🎉🎊',
-      text: '¿Quieres jugar de nuevo?',
+      html: `
+        <div style="font-family: monospace;">
+          Print:
+          ${answerTemplate}
+        </div>
+      `,
       width: 600,
-      padding: '3em',
-      color: '#716add',
-      confirmButtonText: 'Sí',
+      padding: '2rem',
       showCancelButton: true,
-      cancelButtonText: 'No',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Jugar de nuevo',
+      cancelButtonText: 'Ir al inicio',
       didOpen: this.handleSwalBtns.bind(this),
     });
   }
 
-  handleSwalBtns() {
+  private getAnswer(): string {
+    const answers: Record<PuzzleImgEnum, string> = {
+      [PuzzleImgEnum.AREA]: 'Area = 6.0',
+      [PuzzleImgEnum.NUMEROS_PARES]:
+        'La suma de los números pares hasta 1000 es: 500',
+      [PuzzleImgEnum.SALUDO]:
+        'Hola, ¿Cuál es tu nombre? - Josue - Mucho gusto, Josue',
+      [PuzzleImgEnum.SUMA_RESTA]: 'La suma es = 9 - La resta es = 1',
+    };
+
+    return answers[this.currentPuzzle as PuzzleImgEnum] ?? '';
+  }
+
+  private handleSwalBtns() {
     const confirmBtn = Swal.getConfirmButton();
     const cancelBtn = Swal.getCancelButton();
 
@@ -109,7 +151,7 @@ export class PuzzleComponent implements OnInit {
     }
   }
 
-  playAudio() {
+  private playAudio() {
     const audio = new Audio();
     audio.src = '/assets/finish-game.mp3';
     audio.volume = 0.5;
@@ -117,18 +159,21 @@ export class PuzzleComponent implements OnInit {
     audio.play();
   }
 
-  async tryAgain() {
+  private async tryAgain() {
     await this.shuffle(this.tiles);
   }
 
-  navigateToList(): void {
+  private navigateToList(): void {
     this._router.navigateByUrl('/home');
-    localStorage.clear();
   }
 
   private async initTiles() {
-    const pieces = await this._imagPuzzleSrv.getImagePieces();
+    const pieces = await this._imagPuzzleSrv.getImagePieces(
+      Math.pow(this.dimensions, 2)
+    );
+
     let count = 0;
+
     for (let row = 0; row < this.dimensions; row++) {
       for (let col = 0; col < this.dimensions; col++) {
         const tile: Tile = new Tile({
@@ -143,10 +188,12 @@ export class PuzzleComponent implements OnInit {
           },
           boundary: { row: `${row + 1}`, column: `${col + 1}` },
         });
+
         count++;
         this.tiles.push(tile);
       }
     }
+
     const blankTile = this.tiles.pop() as Tile;
     blankTile.blank = true;
 
@@ -213,7 +260,7 @@ export class PuzzleComponent implements OnInit {
     );
   }
 
-  goToHome() {
-    this._router.navigateByUrl('home');
+  public goToHome() {
+    this._router.navigateByUrl('/home');
   }
 }

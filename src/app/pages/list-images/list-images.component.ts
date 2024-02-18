@@ -1,6 +1,7 @@
-import { ImagePuzzleService } from '@/services/image-puzzle.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { PuzzleImgEnum } from '@/enums/puzzle.enum';
+import { ImagePuzzleService } from '@/services/image-puzzle.service';
 
 @Component({
   selector: 'app-list-images',
@@ -8,26 +9,28 @@ import { Router } from '@angular/router';
   styleUrls: ['./list-images.component.scss'],
 })
 export class ListImagesComponent implements OnInit {
-  imageSources: string[] = [
-    'assets/mario.jpg',
-    'assets/stitch.jpg',
-    'assets/boss.jpeg',
-    'assets/doraemon.jpeg',
+  public imageSources: PuzzleImgEnum[] = [
+    PuzzleImgEnum.AREA,
+    PuzzleImgEnum.NUMEROS_PARES,
+    PuzzleImgEnum.SALUDO,
+    PuzzleImgEnum.SUMA_RESTA,
   ];
 
   constructor(
-    private _imagePuzzleService: ImagePuzzleService,
-    private _router: Router
+    private readonly _imagePuzzleService: ImagePuzzleService,
+    private readonly _router: Router
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    localStorage.clear();
+  }
+
+  getFormatImg(img: string): string {
+    return this._imagePuzzleService.getFormatImg(img);
+  }
 
   selectImage(imageSrc: string) {
     this._imagePuzzleService.setImage(imageSrc);
-    this._router.navigate(['puzzle', this.getName(imageSrc)]);
-  }
-
-  getName(route: string) {
-    return route.split('/')[1].split('.')[0];
+    this._router.navigate(['puzzle', imageSrc]);
   }
 }

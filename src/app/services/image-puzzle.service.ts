@@ -4,27 +4,21 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ImagePuzzleService {
-  private _imagePieces: string[] = []; // Rutas de las imágenes divididas
-  private imageSelected: string = '';
-
-  ngOnInit() {}
-  get imgPieces() {
-    return this._imagePieces;
-  }
+  private _imagePieces: string[] = [];
+  private readonly puzzleTypeKey: string = 'puzzle_type';
+  private _imageSelected: string = '';
 
   public getImagePieces(numberOfPieces: number = 9): Promise<string[]> {
-    const image = localStorage.getItem('image');
-    return new Promise<string[]>((resolve) => {
-      this._imagePieces = [];
-      const imageUrl = image ?? this.imageSelected;
+    const puzzleTypeStored = localStorage.getItem(this.puzzleTypeKey);
 
-      if (!imageUrl) {
-        resolve([]);
-        return;
-      }
+    return new Promise<string[]>(resolve => {
+      this._imagePieces = [];
+      const puzzleType = puzzleTypeStored ?? this._imageSelected;
+
+      if (!puzzleType) return resolve([]);
 
       const img = new Image();
-      img.src = imageUrl;
+      img.src = this.getFormatImg(puzzleType);
 
       img.onload = () => {
         const canvas = document.createElement('canvas');
@@ -62,8 +56,12 @@ export class ImagePuzzleService {
     });
   }
 
-  async setImage(newValue: string) {
-    this.imageSelected = newValue;
-    localStorage.setItem('image', newValue);
+  public getFormatImg(img: string): string {
+    return `assets/${img}.png`;
+  }
+
+  public setImage(newValue: string) {
+    this._imageSelected = newValue;
+    localStorage.setItem(this.puzzleTypeKey, newValue);
   }
 }

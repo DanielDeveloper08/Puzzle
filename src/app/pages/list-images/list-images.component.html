@@ -1,16 +1,23 @@
 <div class="container-home">
   <div class="logo">
-    <img src="assets/logo-home.png" alt="logo">
+    <img src="assets/logo-home.png" alt="logo" />
   </div>
+
   <div class="description">
     ¡Construye tu propia aventura con nuestro rompecabezas mágico!
   </div>
+
   <div class="title">
-    <span>Selecciona una imagen</span>
+    <span>Selecciona una imagen:</span>
   </div>
+
   <div class="image-grid">
-    <div class="image-item" *ngFor="let imageSrc of imageSources" (click)="selectImage(imageSrc)">
-      <img [src]="imageSrc" alt="imagen">
+    <div
+      class="image-item"
+      *ngFor="let image of imageSources"
+      (click)="selectImage(image)"
+    >
+      <img [src]="getFormatImg(image)" [alt]="image" />
     </div>
   </div>
 </div>
